@@ -5,6 +5,20 @@ MAIN_PY="$INSTALLDIR/main.py"
 LOGDIR="/home/pppoppi/OneUserTool/logs"
 RUNLOG="$LOGDIR/run.log"
 
+# Einfaches Auswahlmenü ohne externe Abhängigkeiten
+select_option() {
+  local prompt="$1"
+  shift
+  local options=("$@")
+  local PS3="${prompt} "
+  select opt in "${options[@]}"; do
+    if [[ -n "$opt" ]]; then
+      return $((REPLY-1))
+    fi
+    echo "Bitte gültige Nummer eingeben."
+  done
+}
+
 mkdir -p "$LOGDIR"
 echo "=== $(date '+%Y-%m-%d %H:%M:%S') Start ===" >> "$RUNLOG"
 
