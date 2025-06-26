@@ -1,13 +1,29 @@
 # Version 0.1.8
-import os, re, datetime, shutil
-from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
-    QTextEdit, QPushButton, QListWidget, QMessageBox, QMenu, QFileDialog
-)
+"""Editor zum Erstellen und Speichern eigener Songtexte."""
+import datetime
+import os
+import re
+import shutil
+
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import (
+    QFileDialog,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QListWidget,
+    QMenu,
+    QMessageBox,
+    QPushButton,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
+
 
 def clean(s):
-    return re.sub(r'[^\w\-]', '_', s)
+    return re.sub(r"[^\w\-]", "_", s)
+
 
 def dirpath():
     base = os.path.dirname(os.path.abspath(__file__))
@@ -15,11 +31,14 @@ def dirpath():
     os.makedirs(p, exist_ok=True)
     return p
 
+
 class SongtextModul(QWidget):
+    """Erstellt, zeigt und verwaltet einzelne Songtexte."""
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Songtext-Editor")
-        self.resize(700,600)
+        self.resize(700, 600)
         v = QVBoxLayout(self)
         # Titel + Genre
         v.addWidget(QLabel("Songtitel*:"))
@@ -47,6 +66,7 @@ class SongtextModul(QWidget):
 
     def paste(self):
         from PyQt5.QtWidgets import QApplication
+
         self.g.setText(QApplication.clipboard().text())
 
     def save(self):
@@ -74,15 +94,25 @@ class SongtextModul(QWidget):
 
     def ctx(self, pos):
         it = self.lst.itemAt(pos)
-        if not it: return
+        if not it:
+            return
         menu = QMenu(self)
         e = menu.addAction("Bearbeiten")
         d = menu.addAction("Löschen")
         ch = menu.exec_(self.lst.mapToGlobal(pos))
         fp = os.path.join(dirpath(), it.text())
-        if ch == d and QMessageBox.question(self, "Löschen", f"{it.text()} löschen?",
-                                            QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
-            os.remove(fp); self.load()
+        if (
+            ch == d
+            and QMessageBox.question(
+                self,
+                "Löschen",
+                f"{it.text()} löschen?",
+                QMessageBox.Yes | QMessageBox.No,
+            )
+            == QMessageBox.Yes
+        ):
+            os.remove(fp)
+            self.load()
         if ch == e:
             try:
                 with open(fp, "r", encoding="utf-8") as f:
