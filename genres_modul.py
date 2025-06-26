@@ -1,4 +1,5 @@
 # Version 0.1.8
+"""Verwaltet Genre-Profile für das Tool."""
 import os, json, shutil
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
@@ -9,9 +10,11 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 
 def data_path():
+    """Pfad zur JSON-Datei mit den Genre-Profilen."""
     return os.path.join(os.path.dirname(__file__), "Projekt", "genres_profile.json")
 
 def load_profiles():
+    """Lädt vorhandene Profile oder erzeugt eine Standarddatei."""
     path = data_path()
     if not os.path.exists(path):
         os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -21,10 +24,12 @@ def load_profiles():
         return json.load(f) or {"Favoriten":[]}
 
 def save_profiles(d):
+    """Speichert die übergebenen Profile in der JSON-Datei."""
     with open(data_path(), "w", encoding="utf-8") as f:
         json.dump(d, f, ensure_ascii=False, indent=2)
 
 class GenresModul(QWidget):
+    """GUI zur Organisation von Genre-Listen."""
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Genre-Archiv")
