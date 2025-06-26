@@ -1,4 +1,4 @@
-# Version 0.1.7
+# Version 0.1.8
 import sys
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
@@ -8,10 +8,11 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 from design_manager import apply_stylesheet
 from songtext_modul import SongtextModul
+from notiz_modul import NotizModul
 from genres_modul import GenresModul
 from zufallsgenerator_modul import ZufallsGeneratorModul
 
-VERSION = "0.1.7"
+VERSION = "0.1.8"
 
 class HauptModul(QMainWindow):
     def __init__(self):
@@ -24,7 +25,7 @@ class HauptModul(QMainWindow):
 
     def _build_ui(self):
         self.sidebar=QListWidget()
-        for name in ["Songtexte","Genres","Zufallsgenerator"]:
+        for name in ["Songtexte","Notizen","Genres","Zufallsgenerator"]:
             self.sidebar.addItem(name)
         self.sidebar.setFixedWidth(180)
         self.sidebar.itemClicked.connect(self._toggle_module)
@@ -32,6 +33,7 @@ class HauptModul(QMainWindow):
         self.stack=QStackedWidget()
         self.stack.addWidget(QWidget())
         self.stack.addWidget(SongtextModul())
+        self.stack.addWidget(NotizModul())
         self.stack.addWidget(GenresModul())
         self.stack.addWidget(ZufallsGeneratorModul())
 
@@ -46,7 +48,7 @@ class HauptModul(QMainWindow):
         self.setCentralWidget(central)
 
     def _toggle_module(self,item):
-        idx={"Songtexte":1,"Genres":2,"Zufallsgenerator":3}[item.text()]
+        idx={"Songtexte":1,"Notizen":2,"Genres":3,"Zufallsgenerator":4}[item.text()]
         if self.stack.currentIndex()==idx:
             self.stack.setCurrentIndex(0); self.sidebar.clearSelection()
         else:
