@@ -1,4 +1,4 @@
-# Version 0.1.7
+# Version 0.1.8
 import sys
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
@@ -10,8 +10,7 @@ from design_manager import apply_stylesheet
 from songtext_modul import SongtextModul
 from genres_modul import GenresModul
 from zufallsgenerator_modul import ZufallsGeneratorModul
-
-VERSION = "0.1.7"
+from version import VERSION
 
 class HauptModul(QMainWindow):
     def __init__(self):
