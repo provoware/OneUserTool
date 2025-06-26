@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
-INSTALLDIR="/home/pppoppi/OneUserTool"
+# Default installation directory is the directory of this script. It can be
+# overridden by setting the INSTALLDIR environment variable before calling
+# this script.
+INSTALLDIR="${INSTALLDIR:-$(dirname "$(realpath "$0")")}"
 VENV_ACT="$INSTALLDIR/venv/bin/activate"
 MAIN_PY="$INSTALLDIR/main.py"
-LOGDIR="/home/pppoppi/OneUserTool/logs"
+LOGDIR="$INSTALLDIR/logs"
 RUNLOG="$LOGDIR/run.log"
 
 mkdir -p "$LOGDIR"
