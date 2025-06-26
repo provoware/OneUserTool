@@ -1,34 +1,54 @@
 # Version 0.1.8
-import os, json, shutil
-from PyQt5.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QLineEdit, QPushButton, QListWidget, QMessageBox, QComboBox,
-    QInputDialog, QMenu, QFileDialog
-)
-from PyQt5.QtGui import QIcon
+"""Widget zum Verwalten und Speichern eigener Genre-Profile."""
+import json
+import os
+import shutil
+
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import (
+    QApplication,
+    QComboBox,
+    QFileDialog,
+    QHBoxLayout,
+    QInputDialog,
+    QLabel,
+    QLineEdit,
+    QListWidget,
+    QMenu,
+    QMessageBox,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
+
 
 def data_path():
     return os.path.join(os.path.dirname(__file__), "Projekt", "genres_profile.json")
+
 
 def load_profiles():
     path = data_path()
     if not os.path.exists(path):
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w", encoding="utf-8") as f:
-            json.dump({"Favoriten":[]}, f)
+            json.dump({"Favoriten": []}, f)
     with open(path, "r", encoding="utf-8") as f:
-        return json.load(f) or {"Favoriten":[]}
+        return json.load(f) or {"Favoriten": []}
+
 
 def save_profiles(d):
     with open(data_path(), "w", encoding="utf-8") as f:
         json.dump(d, f, ensure_ascii=False, indent=2)
 
+
 class GenresModul(QWidget):
+    """Verwaltet Genres in verschiedenen Profilen."""
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Genre-Archiv")
-        self.setMinimumSize(480,400)
+        self.setMinimumSize(480, 400)
         v = QVBoxLayout(self)
         # Profil-Auswahl
         h1 = QHBoxLayout()
@@ -59,9 +79,11 @@ class GenresModul(QWidget):
         self.lbl = QLabel("Anzahl: 0")
         # Export/Import/Backup
         h3 = QHBoxLayout()
-        for txt, fn in [("Export", self.export),
-                        ("Import", self.import_),
-                        ("Backup", self.backup)]:
+        for txt, fn in [
+            ("Export", self.export),
+            ("Import", self.import_),
+            ("Backup", self.backup),
+        ]:
             h3.addWidget(QPushButton(txt, clicked=fn))
         # Zusammensetzen
         v.addLayout(h1)
@@ -111,17 +133,22 @@ class GenresModul(QWidget):
         self.load_list()
         # kopieren
         QApplication.clipboard().setText(", ".join(arr))
-        QMessageBox.information(self, "Info", f"{len(arr)} Genre(s) hinzugefügt & kopiert")
+        QMessageBox.information(
+            self, "Info", f"{len(arr)} Genre(s) hinzugefügt & kopiert"
+        )
 
     def ctx_menu(self, pos):
         it = self.lst.itemAt(pos)
-        if not it: return
+        if not it:
+            return
         m = QMenu(self)
         e = m.addAction("Bearbeiten")
         d = m.addAction("Löschen")
         a = m.exec_(self.lst.mapToGlobal(pos))
-        if a == e: self.edit(it)
-        if a == d: self.delete(it)
+        if a == e:
+            self.edit(it)
+        if a == d:
+            self.delete(it)
 
     def edit(self, it):
         old = it.text()
@@ -135,22 +162,31 @@ class GenresModul(QWidget):
             self.load_list()
 
     def delete(self, it):
-        if QMessageBox.question(self, "Löschen", f"{it.text()} löschen?",
-                                QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
+        if (
+            QMessageBox.question(
+                self,
+                "Löschen",
+                f"{it.text()} löschen?",
+                QMessageBox.Yes | QMessageBox.No,
+            )
+            == QMessageBox.Yes
+        ):
             prof = self.cb.currentText()
             self.profiles[prof].remove(it.text())
             save_profiles(self.profiles)
             self.load_list()
 
     def export(self):
-        fn,_ = QFileDialog.getSaveFileName(self, "Export", "genres.json", "JSON (*.json)")
+        fn, _ = QFileDialog.getSaveFileName(
+            self, "Export", "genres.json", "JSON (*.json)"
+        )
         if fn:
             with open(fn, "w", encoding="utf-8") as f:
                 json.dump(self.profiles, f, ensure_ascii=False, indent=2)
             QMessageBox.information(self, "Export", "Erfolgreich exportiert")
 
     def import_(self):
-        fn,_ = QFileDialog.getOpenFileName(self, "Import", "", "JSON (*.json)")
+        fn, _ = QFileDialog.getOpenFileName(self, "Import", "", "JSON (*.json)")
         if fn:
             try:
                 data = json.load(open(fn, "r", encoding="utf-8"))
@@ -175,9 +211,11 @@ class GenresModul(QWidget):
             QMessageBox.information(self, "Backup", f"Backup in: {dst}")
 
     def show_help(self):
-        QMessageBox.information(self, "Hilfe – Genre-Archiv",
+        QMessageBox.information(
+            self,
+            "Hilfe – Genre-Archiv",
             "• Genres eingeben, ENTER = hinzufügen\n"
             "• Rechtsklick auf Eintrag = Bearbeiten/Löschen\n"
             "• Liste wird alphabetisch sortiert\n"
-            "• Export/Import/Backup per Knopf"
+            "• Export/Import/Backup per Knopf",
         )

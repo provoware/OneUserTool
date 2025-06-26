@@ -1,28 +1,44 @@
 # Version 0.1.8
-import random, os, json
-from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QPushButton, QComboBox, QListWidget, QMessageBox, QApplication
-)
+"""Zufallsgenerator für Genre-Kombinationen."""
+import json
+import os
+import random
+
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import (
+    QApplication,
+    QComboBox,
+    QHBoxLayout,
+    QLabel,
+    QListWidget,
+    QMessageBox,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
+
 
 def data_path():
     return os.path.join(os.path.dirname(__file__), "Projekt", "genres_profile.json")
+
 
 def load_profiles():
     path = data_path()
     if not os.path.exists(path):
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w", encoding="utf-8") as f:
-            json.dump({"Favoriten":[]}, f)
+            json.dump({"Favoriten": []}, f)
     with open(path, "r", encoding="utf-8") as f:
-        return json.load(f) or {"Favoriten":[]}
+        return json.load(f) or {"Favoriten": []}
+
 
 class ZufallsGeneratorModul(QWidget):
+    """Erzeugt zufällige Genre-Listen basierend auf Profilen."""
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Zufallsgenerator")
-        self.resize(450,360)
+        self.resize(450, 360)
         v = QVBoxLayout(self)
         h = QHBoxLayout()
         # Profil-ComboBox alphabetisch
@@ -38,9 +54,9 @@ class ZufallsGeneratorModul(QWidget):
         self.lst = QListWidget()
         v.addWidget(self.lst)
         # Schnelltasten
-        for n in [4,6,8,10,12,14,16,18,20]:
+        for n in [4, 6, 8, 10, 12, 14, 16, 18, 20]:
             btn = QPushButton(f"{n} Genres")
-            btn.clicked.connect(lambda _,x=n: self.pick(x))
+            btn.clicked.connect(lambda _, x=n: self.pick(x))
             h.addWidget(btn)
         v.addLayout(h)
         # Kopieren-Knopf
