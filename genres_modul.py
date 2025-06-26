@@ -15,14 +15,24 @@ def load_profiles():
     path = data_path()
     if not os.path.exists(path):
         os.makedirs(os.path.dirname(path), exist_ok=True)
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump({"Favoriten":[]}, f)
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f) or {"Favoriten":[]}
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump({"Favoriten":[]}, f)
+        except Exception:
+            return {"Favoriten":[]}
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f) or {"Favoriten":[]}
+    except Exception:
+        QMessageBox.warning(None, "Fehler", "Profile konnten nicht geladen werden")
+        return {"Favoriten":[]}
 
 def save_profiles(d):
-    with open(data_path(), "w", encoding="utf-8") as f:
-        json.dump(d, f, ensure_ascii=False, indent=2)
+    try:
+        with open(data_path(), "w", encoding="utf-8") as f:
+            json.dump(d, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        QMessageBox.critical(None, "Fehler", f"Speichern fehlgeschlagen:\n{e}")
 
 class GenresModul(QWidget):
     def __init__(self):
@@ -145,33 +155,41 @@ class GenresModul(QWidget):
     def export(self):
         fn,_ = QFileDialog.getSaveFileName(self, "Export", "genres.json", "JSON (*.json)")
         if fn:
-            with open(fn, "w", encoding="utf-8") as f:
-                json.dump(self.profiles, f, ensure_ascii=False, indent=2)
+            try:
+                with open(fn, "w", encoding="utf-8") as f:
+                    json.dump(self.profiles, f, ensure_ascii=False, indent=2)
+            except Exception as e:
+                return QMessageBox.critical(self, "Fehler", f"Export fehlgeschlagen:\n{e}")
             QMessageBox.information(self, "Export", "Erfolgreich exportiert")
 
     def import_(self):
         fn,_ = QFileDialog.getOpenFileName(self, "Import", "", "JSON (*.json)")
         if fn:
             try:
-                data = json.load(open(fn, "r", encoding="utf-8"))
-                if isinstance(data, dict):
-                    self.profiles = data
-                    save_profiles(data)
-                    self.cb.clear()
-                    for name in sorted(data.keys(), key=str.lower):
-                        self.cb.addItem(name)
-                    self.cb.setCurrentText(list(data.keys())[0])
-                    self.load_list()
-                    QMessageBox.information(self, "Import", "Erfolgreich importiert")
-            except Exception:
-                QMessageBox.warning(self, "Fehler", "Import fehlgeschlagen")
+                with open(fn, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+            except Exception as e:
+                return QMessageBox.critical(self, "Fehler", f"Import fehlgeschlagen:\n{e}")
+
+            if isinstance(data, dict):
+                self.profiles = data
+                save_profiles(data)
+                self.cb.clear()
+                for name in sorted(data.keys(), key=str.lower):
+                    self.cb.addItem(name)
+                self.cb.setCurrentText(list(data.keys())[0])
+                self.load_list()
+                QMessageBox.information(self, "Import", "Erfolgreich importiert")
 
     def backup(self):
         d = QFileDialog.getExistingDirectory(self, "Backup-Ordner wählen")
         if d:
             dst = os.path.join(d, "OneUserTool_Backup")
-            shutil.rmtree(dst, ignore_errors=True)
-            shutil.copytree(os.path.join(os.path.dirname(__file__), "Projekt"), dst)
+            try:
+                shutil.rmtree(dst, ignore_errors=True)
+                shutil.copytree(os.path.join(os.path.dirname(__file__), "Projekt"), dst)
+            except Exception as e:
+                return QMessageBox.critical(self, "Fehler", f"Backup fehlgeschlagen:\n{e}")
             QMessageBox.information(self, "Backup", f"Backup in: {dst}")
 
     def show_help(self):
