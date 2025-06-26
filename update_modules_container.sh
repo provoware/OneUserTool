@@ -5,7 +5,14 @@
 set -euo pipefail
 
 # Load global config (INSTALLDIR, MODULE_VERSION)
-source "$(dirname "$0")/../config.sh"
+# Check for config.sh before sourcing; exit with error if missing
+CONFIG_PATH="$(dirname "$0")/../config.sh"
+if [[ -f "$CONFIG_PATH" ]]; then
+  source "$CONFIG_PATH"
+else
+  echo "ERROR: Required config '$CONFIG_PATH' not found." >&2
+  exit 1
+fi
 
 log() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"; }
 
