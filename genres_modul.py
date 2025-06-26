@@ -151,20 +151,28 @@ class GenresModul(QWidget):
 
     def import_(self):
         fn,_ = QFileDialog.getOpenFileName(self, "Import", "", "JSON (*.json)")
-        if fn:
-            try:
-                data = json.load(open(fn, "r", encoding="utf-8"))
-                if isinstance(data, dict):
-                    self.profiles = data
-                    save_profiles(data)
-                    self.cb.clear()
-                    for name in sorted(data.keys(), key=str.lower):
-                        self.cb.addItem(name)
-                    self.cb.setCurrentText(list(data.keys())[0])
-                    self.load_list()
-                    QMessageBox.information(self, "Import", "Erfolgreich importiert")
-            except Exception:
-                QMessageBox.warning(self, "Fehler", "Import fehlgeschlagen")
+        if not fn:
+            return
+        try:
+            with open(fn, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except json.JSONDecodeError:
+            return QMessageBox.warning(self, "Fehler", "Import fehlgeschlagen: Ungültige JSON")
+        except Exception:
+            return QMessageBox.warning(self, "Fehler", "Import fehlgeschlagen")
+
+        if not data:
+            return QMessageBox.warning(self, "Fehler", "Import fehlgeschlagen: Datei ist leer")
+
+        if isinstance(data, dict):
+            self.profiles = data
+            save_profiles(data)
+            self.cb.clear()
+            for name in sorted(data.keys(), key=str.lower):
+                self.cb.addItem(name)
+            self.cb.setCurrentText(next(iter(data.keys())))
+            self.load_list()
+            QMessageBox.information(self, "Import", "Erfolgreich importiert")
 
     def backup(self):
         d = QFileDialog.getExistingDirectory(self, "Backup-Ordner wählen")
