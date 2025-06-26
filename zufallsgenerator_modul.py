@@ -1,16 +1,14 @@
 # Version 0.1.8
 import random, os, json
+from data_utils import genres_profile_path
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QPushButton, QComboBox, QListWidget, QMessageBox, QApplication
 )
 from PyQt5.QtCore import Qt
 
-def data_path():
-    return os.path.join(os.path.dirname(__file__), "Projekt", "genres_profile.json")
-
 def load_profiles():
-    path = data_path()
+    path = genres_profile_path()
     if not os.path.exists(path):
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w", encoding="utf-8") as f:
