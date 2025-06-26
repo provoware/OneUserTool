@@ -1,3 +1,4 @@
 # Minimal Python Version: 3.7+
 pydub>=0.25.1
 PyQt5>=5.15.7
+wheel
