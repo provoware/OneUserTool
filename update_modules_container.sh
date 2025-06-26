@@ -5,7 +5,8 @@
 set -euo pipefail
 
 # Load global config (INSTALLDIR, MODULE_VERSION)
-source "$(dirname "$0")/../config.sh"
+# The file should reside next to this script as "config.sh".
+source "$(dirname "$0")/config.sh"
 
 log() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"; }
 
@@ -61,9 +62,9 @@ fi
 # Copy updated component
 log "Installing updated ModulesContainer.jsx (Version $MODULE_VERSION)"
 if [[ "$DRY_RUN" == false ]]; then
-  cp "$(dirname "$0")/../modules/ModulesContainer.jsx" "$component_file"
+  cp "$(dirname "$0")/modules/ModulesContainer.jsx" "$component_file"
 else
-  echo "DRY RUN: cp $(dirname "$0")/../modules/ModulesContainer.jsx $component_file"
+  echo "DRY RUN: cp $(dirname "$0")/modules/ModulesContainer.jsx $component_file"
 fi
 
 log "Update complete. Please rebuild frontend if necessary."
