@@ -1,10 +1,26 @@
 # Version 0.1.8
-import os, re, datetime, shutil
+import os
+import re
+import datetime
+import shutil
 from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
-    QTextEdit, QPushButton, QListWidget, QMessageBox, QMenu, QFileDialog
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QTextEdit,
+    QPushButton,
+    QListWidget,
+    QMessageBox,
+    QMenu,
+    QFileDialog,
+    QShortcut,
 )
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtGui import QKeySequence
+
+from log_helper import log
 
 def clean(s):
     return re.sub(r'[^\w\-]', '_', s)
@@ -35,15 +51,27 @@ class SongtextModul(QWidget):
         # Text
         v.addWidget(QLabel("Songtext*:"))
         self.te = QTextEdit()
+        self.te.setUndoRedoEnabled(True)
         v.addWidget(self.te)
         v.addWidget(QPushButton("Speichern", clicked=self.save))
+        # Tastenkürzel für Undo/Redo
+        QShortcut(QKeySequence('Ctrl+Z'), self, self.te.undo)
+        QShortcut(QKeySequence('Ctrl+Y'), self, self.te.redo)
         # Übersicht
         v.addWidget(QLabel("Übersicht:"))
         self.lst = QListWidget()
         self.lst.setContextMenuPolicy(Qt.CustomContextMenu)
         self.lst.customContextMenuRequested.connect(self.ctx)
         v.addWidget(self.lst)
+        self.status = QLabel('')
+        v.addWidget(self.status)
         self.load()
+
+        # Automatisches Speichern alle 5 Minuten
+        self.timer = QTimer(self)
+        self.timer.setInterval(5 * 60 * 1000)
+        self.timer.timeout.connect(self.autosave)
+        self.timer.start()
 
     def paste(self):
         from PyQt5.QtWidgets import QApplication
@@ -59,8 +87,11 @@ class SongtextModul(QWidget):
             with open(os.path.join(dirpath(), fn), "w", encoding="utf-8") as f:
                 f.write(f"Titel: {ti}\nGenre: {self.g.text()}\n---\n{tx}")
             QMessageBox.information(self, "OK", "Gespeichert")
+            log(f'Songtext gespeichert: {fn}')
+            self.status.setText(f'Zuletzt gespeichert um {datetime.datetime.now().strftime("%H:%M")}')
         except Exception as e:
             QMessageBox.critical(self, "Fehler", f"Speichern fehlgeschlagen:\n{e}")
+            log(f'Fehler beim Speichern: {e}')
         self.t.clear()
         self.g.clear()
         self.te.clear()
@@ -92,3 +123,20 @@ class SongtextModul(QWidget):
                 self.te.setText("\n".join(lines[3:]))
             except Exception as e:
                 QMessageBox.critical(self, "Fehler", f"Öffnen fehlgeschlagen:\n{e}")
+
+    def autosave(self):
+        """Speichert den aktuellen Text automatisch."""
+        tx = self.te.toPlainText().strip()
+        if not tx:
+            return
+        ti = self.t.text().strip() or 'ohneTitel'
+        fn = f"{clean(ti)}_auto_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+        try:
+            with open(os.path.join(dirpath(), fn), 'w', encoding='utf-8') as f:
+                f.write(tx)
+            self.status.setText(
+                f'Zuletzt automatisch gespeichert um {datetime.datetime.now().strftime("%H:%M")}'
+            )
+            log(f'Auto-Save: {fn}')
+        except Exception as e:
+            log(f'Fehler beim Auto-Save: {e}')
