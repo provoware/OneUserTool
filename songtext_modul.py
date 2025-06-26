@@ -1,4 +1,5 @@
 # Version 0.1.8
+"""Modul zum Speichern und Verwalten von Songtexten."""
 import os, re, datetime, shutil
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
@@ -7,15 +8,18 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 
 def clean(s):
+    """Bereite einen Dateinamen ohne Sonderzeichen vor."""
     return re.sub(r'[^\w\-]', '_', s)
 
 def dirpath():
+    """Gibt den Ordner für gespeicherte Songtexte zurück."""
     base = os.path.dirname(os.path.abspath(__file__))
     p = os.path.join(base, "Projekt", "Songtexte")
     os.makedirs(p, exist_ok=True)
     return p
 
 class SongtextModul(QWidget):
+    """Einfache GUI zum Erstellen und Bearbeiten von Songtexten."""
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Songtext-Editor")
@@ -46,10 +50,12 @@ class SongtextModul(QWidget):
         self.load()
 
     def paste(self):
+        """Fügt den aktuellen Clipboard-Text in das Genre-Feld ein."""
         from PyQt5.QtWidgets import QApplication
         self.g.setText(QApplication.clipboard().text())
 
     def save(self):
+        """Speichert den eingegebenen Songtext als Datei."""
         ti = self.t.text().strip()
         tx = self.te.toPlainText().strip()
         if not ti or not tx:
@@ -67,12 +73,14 @@ class SongtextModul(QWidget):
         self.load()
 
     def load(self):
+        """Lädt vorhandene Songtext-Dateien in die Liste."""
         self.lst.clear()
         for fn in sorted(os.listdir(dirpath()), reverse=True):
             if fn.endswith(".txt"):
                 self.lst.addItem(fn)
 
     def ctx(self, pos):
+        """Zeigt ein Kontextmenü für Listen-Einträge."""
         it = self.lst.itemAt(pos)
         if not it: return
         menu = QMenu(self)

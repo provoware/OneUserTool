@@ -1,4 +1,5 @@
 # Version 0.1.7
+"""Graphische Hauptanwendung für OneUserTool."""
 import sys
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
@@ -14,6 +15,7 @@ from zufallsgenerator_modul import ZufallsGeneratorModul
 VERSION = "0.1.7"
 
 class HauptModul(QMainWindow):
+    """Hauptfenster mit Navigationsleiste und Modulinhalt."""
     def __init__(self):
         super().__init__()
         self.theme="dark"; self.fontsize=16
@@ -46,6 +48,7 @@ class HauptModul(QMainWindow):
         self.setCentralWidget(central)
 
     def _toggle_module(self,item):
+        """Wechselt das angezeigte Modul in der zentralen Ansicht."""
         idx={"Songtexte":1,"Genres":2,"Zufallsgenerator":3}[item.text()]
         if self.stack.currentIndex()==idx:
             self.stack.setCurrentIndex(0); self.sidebar.clearSelection()

@@ -1,6 +1,8 @@
 # Version 0.1.7
+"""Hilfsfunktionen zur Anwendung eines konsistenten Qt-Designs."""
 from PyQt5.QtWidgets import QApplication
 def apply_stylesheet(app, theme="dark", fontsize=16):
+    """Setze ein einfaches Stylesheet für die angegebene QApplication."""
     if theme=="dark":
         bg,fg,inp="#23272E","#f2f2f2","#2b2f36"
     elif theme=="light":

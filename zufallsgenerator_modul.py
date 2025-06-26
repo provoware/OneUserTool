@@ -1,4 +1,5 @@
 # Version 0.1.8
+"""Zufallsgenerator für Genres basierend auf gespeicherten Profilen."""
 import random, os, json
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel,
@@ -7,9 +8,11 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 
 def data_path():
+    """Pfad zur gemeinsamen Genre-Profil-Datei."""
     return os.path.join(os.path.dirname(__file__), "Projekt", "genres_profile.json")
 
 def load_profiles():
+    """Lädt die Genre-Profile aus der JSON-Datei."""
     path = data_path()
     if not os.path.exists(path):
         os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -19,6 +22,7 @@ def load_profiles():
         return json.load(f) or {"Favoriten":[]}
 
 class ZufallsGeneratorModul(QWidget):
+    """GUI für die zufällige Auswahl von Genres."""
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Zufallsgenerator")
@@ -52,6 +56,7 @@ class ZufallsGeneratorModul(QWidget):
         self.lst.clear()
 
     def pick(self, n):
+        """Wählt zufällig ``n`` Genres aus dem aktuellen Profil."""
         if not self.genres:
             return QMessageBox.warning(self, "Fehler", "Keine Genres geladen")
         sel = random.sample(self.genres, min(n, len(self.genres)))
@@ -61,6 +66,7 @@ class ZufallsGeneratorModul(QWidget):
         QApplication.clipboard().setText(", ".join(sel))
 
     def copy(self):
+        """Kopiert die angezeigten Genres in die Zwischenablage."""
         txt = ", ".join(self.lst.item(i).text() for i in range(self.lst.count()))
         QApplication.clipboard().setText(txt)
         QMessageBox.information(self, "Kopiert", "Genres in Zwischenablage")
