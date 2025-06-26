@@ -13,10 +13,17 @@ def load_profiles():
     path = data_path()
     if not os.path.exists(path):
         os.makedirs(os.path.dirname(path), exist_ok=True)
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump({"Favoriten":[]}, f)
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f) or {"Favoriten":[]}
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump({"Favoriten":[]}, f)
+        except Exception:
+            return {"Favoriten":[]}
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f) or {"Favoriten":[]}
+    except Exception:
+        QMessageBox.warning(None, "Fehler", "Profile konnten nicht geladen werden")
+        return {"Favoriten":[]}
 
 class ZufallsGeneratorModul(QWidget):
     def __init__(self):
