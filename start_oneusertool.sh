@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-INSTALLDIR="/home/pppoppi/OneUserTool"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+INSTALLDIR="$SCRIPT_DIR"
 VENV_ACT="$INSTALLDIR/venv/bin/activate"
 MAIN_PY="$INSTALLDIR/main.py"
-LOGDIR="/home/pppoppi/OneUserTool/logs"
+LOGDIR="$INSTALLDIR/logs"
 RUNLOG="$LOGDIR/run.log"
 
 mkdir -p "$LOGDIR"
@@ -14,6 +15,18 @@ if [ ! -f "$VENV_ACT" ]; then
 fi
 # shellcheck disable=SC1090
 source "$VENV_ACT"
+
+select_option() {
+  local prompt="$1"; shift
+  local options=("$@")
+  PS3="$prompt "
+  select opt in "${options[@]}"; do
+    if [[ -n "$opt" ]]; then
+      REPLY=$((REPLY-1))
+      return "$REPLY"
+    fi
+  done
+}
 
 while true; do
   python3 "$MAIN_PY" 2>&1 | tee -a "$RUNLOG"

@@ -1,28 +1,25 @@
 # Version 0.1.8
-import os, json, shutil
+import os
+import json
+import shutil
 from PyQt5.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QLineEdit, QPushButton, QListWidget, QMessageBox, QComboBox,
-    QInputDialog, QMenu, QFileDialog
+    QApplication,
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QListWidget,
+    QMessageBox,
+    QComboBox,
+    QInputDialog,
+    QMenu,
+    QFileDialog,
 )
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
-
-def data_path():
-    return os.path.join(os.path.dirname(__file__), "Projekt", "genres_profile.json")
-
-def load_profiles():
-    path = data_path()
-    if not os.path.exists(path):
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump({"Favoriten":[]}, f)
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f) or {"Favoriten":[]}
-
-def save_profiles(d):
-    with open(data_path(), "w", encoding="utf-8") as f:
-        json.dump(d, f, ensure_ascii=False, indent=2)
+from utils import data_path, load_profiles, save_profiles
 
 class GenresModul(QWidget):
     def __init__(self):
@@ -153,7 +150,8 @@ class GenresModul(QWidget):
         fn,_ = QFileDialog.getOpenFileName(self, "Import", "", "JSON (*.json)")
         if fn:
             try:
-                data = json.load(open(fn, "r", encoding="utf-8"))
+                with open(fn, "r", encoding="utf-8") as f:
+                    data = json.load(f)
                 if isinstance(data, dict):
                     self.profiles = data
                     save_profiles(data)
