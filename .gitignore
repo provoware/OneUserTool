@@ -1,0 +1,9 @@
+# Ignore virtual environments
+.venv/
+
+# Python caches
+__pycache__/
+
+# Log and data directories
+logs/
+Projekt/
