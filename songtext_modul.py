@@ -1,10 +1,21 @@
-# Version 0.1.8
-import os, re, datetime, shutil
-from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
-    QTextEdit, QPushButton, QListWidget, QMessageBox, QMenu, QFileDialog
-)
+"""Song text management module."""
+import datetime
+import os
+import re
+
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import (
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QTextEdit,
+    QPushButton,
+    QListWidget,
+    QMessageBox,
+    QMenu,
+)
 
 def clean(s):
     return re.sub(r'[^\w\-]', '_', s)
@@ -74,16 +85,29 @@ class SongtextModul(QWidget):
 
     def ctx(self, pos):
         it = self.lst.itemAt(pos)
-        if not it: return
+        if not it:
+            return
+
         menu = QMenu(self)
-        e = menu.addAction("Bearbeiten")
-        d = menu.addAction("Löschen")
-        ch = menu.exec_(self.lst.mapToGlobal(pos))
+        edit_action = menu.addAction("Bearbeiten")
+        delete_action = menu.addAction("Löschen")
+        chosen = menu.exec_(self.lst.mapToGlobal(pos))
         fp = os.path.join(dirpath(), it.text())
-        if ch == d and QMessageBox.question(self, "Löschen", f"{it.text()} löschen?",
-                                            QMessageBox.Yes|QMessageBox.No) == QMessageBox.Yes:
-            os.remove(fp); self.load()
-        if ch == e:
+
+        if (
+            chosen == delete_action
+            and QMessageBox.question(
+                self,
+                "Löschen",
+                f"{it.text()} löschen?",
+                QMessageBox.Yes | QMessageBox.No,
+            )
+            == QMessageBox.Yes
+        ):
+            os.remove(fp)
+            self.load()
+
+        if chosen == edit_action:
             try:
                 with open(fp, "r", encoding="utf-8") as f:
                     lines = f.read().splitlines()

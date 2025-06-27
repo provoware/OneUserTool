@@ -1,28 +1,28 @@
-# Version 0.1.8
-import os, json, shutil
-from PyQt5.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QLineEdit, QPushButton, QListWidget, QMessageBox, QComboBox,
-    QInputDialog, QMenu, QFileDialog
-)
+"""Genre management module."""
+
+import json
+import os
+import shutil
+
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import (
+    QApplication,
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QListWidget,
+    QMessageBox,
+    QComboBox,
+    QInputDialog,
+    QMenu,
+    QFileDialog,
+)
 
-def data_path():
-    return os.path.join(os.path.dirname(__file__), "Projekt", "genres_profile.json")
-
-def load_profiles():
-    path = data_path()
-    if not os.path.exists(path):
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump({"Favoriten":[]}, f)
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f) or {"Favoriten":[]}
-
-def save_profiles(d):
-    with open(data_path(), "w", encoding="utf-8") as f:
-        json.dump(d, f, ensure_ascii=False, indent=2)
+from utils import load_profiles, save_profiles
 
 class GenresModul(QWidget):
     def __init__(self):
@@ -115,13 +115,18 @@ class GenresModul(QWidget):
 
     def ctx_menu(self, pos):
         it = self.lst.itemAt(pos)
-        if not it: return
+        if not it:
+            return
+
         m = QMenu(self)
-        e = m.addAction("Bearbeiten")
-        d = m.addAction("Löschen")
-        a = m.exec_(self.lst.mapToGlobal(pos))
-        if a == e: self.edit(it)
-        if a == d: self.delete(it)
+        edit_action = m.addAction("Bearbeiten")
+        delete_action = m.addAction("Löschen")
+        action = m.exec_(self.lst.mapToGlobal(pos))
+
+        if action == edit_action:
+            self.edit(it)
+        if action == delete_action:
+            self.delete(it)
 
     def edit(self, it):
         old = it.text()
