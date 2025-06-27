@@ -1,4 +1,4 @@
-# Version 0.1.7
+# Version 0.1.8
 from PyQt5.QtWidgets import QApplication
 def apply_stylesheet(app, theme="dark", fontsize=16):
     if theme=="dark":
