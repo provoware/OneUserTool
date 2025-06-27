@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
-INSTALLDIR="/home/pppoppi/OneUserTool"
+set -e
+INSTALLDIR="$(cd "$(dirname "$0")" && pwd)"
 VENV_ACT="$INSTALLDIR/venv/bin/activate"
 MAIN_PY="$INSTALLDIR/main.py"
-LOGDIR="/home/pppoppi/OneUserTool/logs"
+LOGDIR="$INSTALLDIR/logs"
 RUNLOG="$LOGDIR/run.log"
 
 mkdir -p "$LOGDIR"
 echo "=== $(date '+%Y-%m-%d %H:%M:%S') Start ===" >> "$RUNLOG"
 
 if [ ! -f "$VENV_ACT" ]; then
-  echo "[FEHLER] venv fehlt. Setup erneut ausführen." | tee -a "$RUNLOG" >&2
+  echo "[FEHLER] Virtuelle Umgebung fehlt. Bitte 'bash setup.sh' ausfuehren." | tee -a "$RUNLOG" >&2
   exit 1
 fi
 # shellcheck disable=SC1090
@@ -19,11 +20,14 @@ while true; do
   python3 "$MAIN_PY" 2>&1 | tee -a "$RUNLOG"
   code=${PIPESTATUS[0]}
   if [ "$code" -eq 0 ]; then break; fi
-  echo "Absturz (Code $code)."
-  select_option "Aktion wählen:" "Neustart" "Logs anzeigen" "Beenden"
-  case $? in
-    0) continue ;;
-    1) less "$RUNLOG" ;;
-    2) exit 1 ;;
+  echo "Das Programm wurde mit Code $code beendet."
+  echo "Aktion waehlen:\n  1) Neustart\n  2) Logs anzeigen\n  3) Beenden"
+  read -rp "Auswahl: " ch
+  case "$ch" in
+    1) continue ;;
+    2) less "$RUNLOG" ;;
+    3) exit 1 ;;
+    *) echo "Ungueltige Eingabe" ;;
   esac
 done
+

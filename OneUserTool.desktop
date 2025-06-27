@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=OneUserTool
+Comment=Startet das OneUserTool
+Exec=bash -c 'cd "$(dirname "%k")" && ./start_oneusertool.sh'
+Icon=utilities-terminal
+Terminal=true
+
