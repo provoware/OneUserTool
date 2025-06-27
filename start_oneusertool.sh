@@ -1,4 +1,20 @@
 #!/usr/bin/env bash
+
+# Small helper to show a numbered menu and return the chosen index
+# Usage: select_option "prompt" "opt1" "opt2" ...
+# The function exits with the selected option number (starting at 0).
+select_option() {
+  local prompt=$1; shift
+  PS3="$prompt "
+  local options=("$@")
+  select opt in "${options[@]}"; do
+    if [ "$REPLY" -ge 1 ] && [ "$REPLY" -le "${#options[@]}" ]; then
+      return $((REPLY - 1))
+    fi
+    echo "Bitte eine Zahl aus der Liste wählen."
+  done
+}
+
 INSTALLDIR="/home/pppoppi/OneUserTool"
 VENV_ACT="$INSTALLDIR/venv/bin/activate"
 MAIN_PY="$INSTALLDIR/main.py"
