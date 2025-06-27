@@ -1,4 +1,4 @@
-# Version 0.1.7
+"""Main window of OneUserTool."""
 import sys
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget,
@@ -10,8 +10,8 @@ from design_manager import apply_stylesheet
 from songtext_modul import SongtextModul
 from genres_modul import GenresModul
 from zufallsgenerator_modul import ZufallsGeneratorModul
+from version import __version__
 
-VERSION = "0.1.7"
 
 class HauptModul(QMainWindow):
     def __init__(self):
@@ -36,7 +36,7 @@ class HauptModul(QMainWindow):
         self.stack.addWidget(GenresModul())
         self.stack.addWidget(ZufallsGeneratorModul())
 
-        header=QLabel(f"OneUserTool v{VERSION}")
+        header = QLabel(f"OneUserTool v{__version__}")
         header.setAlignment(Qt.AlignCenter)
         header.setStyleSheet("font-size:18px; padding:6px;")
 

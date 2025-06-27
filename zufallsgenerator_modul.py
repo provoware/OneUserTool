@@ -1,6 +1,5 @@
-# Version 0.1.8
-import json
-import os
+"""Random genre picker module."""
+
 import random
 
 from PyQt5.QtWidgets import (
@@ -15,17 +14,7 @@ from PyQt5.QtWidgets import (
     QApplication,
 )
 
-def data_path():
-    return os.path.join(os.path.dirname(__file__), "Projekt", "genres_profile.json")
-
-def load_profiles():
-    path = data_path()
-    if not os.path.exists(path):
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump({"Favoriten":[]}, f)
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f) or {"Favoriten":[]}
+from utils import load_profiles
 
 class ZufallsGeneratorModul(QWidget):
     def __init__(self):

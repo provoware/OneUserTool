@@ -1,4 +1,5 @@
-# Version 0.1.8
+"""Genre management module."""
+
 import json
 import os
 import shutil
@@ -21,21 +22,7 @@ from PyQt5.QtWidgets import (
     QFileDialog,
 )
 
-def data_path():
-    return os.path.join(os.path.dirname(__file__), "Projekt", "genres_profile.json")
-
-def load_profiles():
-    path = data_path()
-    if not os.path.exists(path):
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump({"Favoriten":[]}, f)
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f) or {"Favoriten":[]}
-
-def save_profiles(d):
-    with open(data_path(), "w", encoding="utf-8") as f:
-        json.dump(d, f, ensure_ascii=False, indent=2)
+from utils import load_profiles, save_profiles
 
 class GenresModul(QWidget):
     def __init__(self):

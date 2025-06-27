@@ -1,6 +1,6 @@
 # OneUserTool
 
-OneUserTool ist eine kleine PyQt-Anwendung zum Verwalten von Songtexten und Genres. Das Projekt besteht aus mehreren Modulen, die über eine Sidebar ausgewählt werden können.
+OneUserTool ist eine kleine PyQt-Anwendung zum Verwalten von Songtexten und Genres. Das Projekt besteht aus mehreren Modulen, die über eine Sidebar ausgewählt werden können. Ab Version 0.2.0 liegen gemeinsame Hilfsfunktionen im Modul `utils.py`.
 
 ## Installation
 
@@ -26,4 +26,5 @@ OneUserTool ist eine kleine PyQt-Anwendung zum Verwalten von Songtexten und Genr
 
 - Mit `start_oneusertool.sh` kann die Anwendung in einer Endlosschleife gestartet werden, um Abstürze abzufangen.
 - Die Daten werden im Ordner `Projekt/` im Repository gespeichert. Ein Backup kann direkt aus dem Genre-Modul heraus erstellt werden.
+- Das Farbschema lässt sich über die Variable `theme` in `main.py` anpassen ("dark", "light" oder "highcontrast").
 

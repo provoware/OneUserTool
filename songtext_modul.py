@@ -1,4 +1,4 @@
-# Version 0.1.8
+"""Song text management module."""
 import datetime
 import os
 import re
