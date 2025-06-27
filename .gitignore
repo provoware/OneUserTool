@@ -1,0 +1,19 @@
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+
+# Virtual environment
+venv/
+.venv/
+
+# Logs and local data
+logs/
+*.log
+Projekt/
+
+# Build and packaging
+*.deb
+debian_pkg/
