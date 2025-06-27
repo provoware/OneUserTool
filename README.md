@@ -28,3 +28,10 @@ OneUserTool ist eine kleine PyQt-Anwendung zum Verwalten von Songtexten und Genr
 - Die Daten werden im Ordner `Projekt/` im Repository gespeichert. Ein Backup kann direkt aus dem Genre-Modul heraus erstellt werden.
 - Das Farbschema lässt sich über die Variable `theme` in `main.py` anpassen ("dark", "light" oder "highcontrast").
 
+## Weiterführende Tipps
+
+- Wer zum ersten Mal mit Python arbeitet, findet auf [python.org](https://www.python.org/doc/) eine leicht verständliche Dokumentation.
+- Durch den Aufruf `python main.py --help` lassen sich alle Startoptionen anzeigen.
+- Versionskontrolle mit Git hilft, eigene Änderungen nachzuverfolgen.
+- Häufige Backups verhindern Datenverlust, insbesondere vor Updates.
+
