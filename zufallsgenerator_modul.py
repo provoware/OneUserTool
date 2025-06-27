@@ -1,10 +1,19 @@
 # Version 0.1.8
-import random, os, json
+import json
+import os
+import random
+
 from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QPushButton, QComboBox, QListWidget, QMessageBox, QApplication
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QComboBox,
+    QListWidget,
+    QMessageBox,
+    QApplication,
 )
-from PyQt5.QtCore import Qt
 
 def data_path():
     return os.path.join(os.path.dirname(__file__), "Projekt", "genres_profile.json")
